@@ -1,0 +1,53 @@
+name: CI/CD
+
+on:
+  workflow_dispatch: {}
+  push:
+    branches:
+      - master
+  pull_request: {}
+
+permissions:
+  pull-requests: write
+  contents: read
+  packages: read
+  actions: read
+
+env:
+  CACHIX_CACHE: ${{ vars.CACHIX_CACHE }}
+  SYSTEM_DIFFS_DIR: './system-diffs'
+
+jobs:
+  builds:
+    timeout-minutes: 30
+    runs-on: self-hosted
+
+    strategy:
+      matrix:
+        package:
+          - commit-boost
+          - go-ethereum
+          - nethermind
+          - secrets
+          - web3signer
+
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - uses: cachix/cachix-action@v17
+        with:
+          name:      '${{ vars.CACHIX_CACHE }}'
+          authToken: '${{ secrets.CACHIX_AUTH_TOKEN }}'
+          useDaemon: false
+          pathsToPush: 'result'
+
+      - name: 'Build package: ${{ matrix.package }}'
+        run: nix build '.#${{ matrix.package }}' --out-link result
+
+      - name: 'Notify Discord'
+        if: github.ref == format('refs/heads/{0}', github.event.repository.default_branch)
+        uses: ./.github/actions/discord_notify
+        with:
+          webhook_url: ${{ secrets.DISCORD_WEBHOOK_URL }}

@@ -1,0 +1,59 @@
+name: Discord Notification
+description: 'Send Discord notification with CI/CD build result'
+inputs:
+  webhook_url:
+    description: 'Discord webhook URL'
+    required: true
+  status:
+    description: 'Job status (success/failure)'
+    required: false
+    default: ${{ job.status }}
+  workflow_name:
+    description: 'Name of the workflow'
+    required: false
+    default: ${{ github.workflow }}
+  branch:
+    description: 'Branch name'
+    required: false
+    default: ${{ github.ref_name }}
+  repository:
+    description: 'Repository name'
+    required: false
+    default: ${{ github.repository }}
+  run_id:
+    description: 'GitHub run ID'
+    required: false
+    default: ${{ github.run_id }}
+  server_url:
+    description: 'GitHub server URL'
+    required: false
+    default: ${{ github.server_url }}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Send Discord notification
+      shell: bash
+      run: |
+        TITLE="${{ inputs.workflow_name }} Job ${{ inputs.status }}"
+        COLOR=15158332  # red
+        if [ "${{ inputs.status }}" = "success" ]; then
+          COLOR=3066993  # green
+        fi
+
+        curl -H "Content-Type: application/json" \
+            -X POST \
+            -d "{
+              \"embeds\": [{
+                \"title\": \"$TITLE\",
+                \"url\": \"${{ inputs.server_url }}/${{ inputs.repository }}/actions/runs/${{ inputs.run_id }}\",
+                \"description\": \"The workflow has ${{ inputs.status }} on branch \`${{ inputs.branch }}\`\",
+                \"color\": $COLOR,
+                \"fields\": [
+                  {\"name\": \"Repository\", \"value\": \"${{ inputs.repository }}\", \"inline\": true},
+                  {\"name\": \"Branch\", \"value\": \"${{ inputs.branch }}\", \"inline\": true}
+                ],
+                \"timestamp\": \"$(date -u +%Y-%m-%dT%H:%M:%S.000Z)\"
+              }]
+            }" \
+            "${{ inputs.webhook_url }}"
