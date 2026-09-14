@@ -1,0 +1,25 @@
+# Nix build artifacts
+result
+.result
+
+# Direnv
+.direnv
+
+*.qcow2
+
+# local env settings
+.env
+
+# Terraform
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate.backup
+
+# Pre Commit
+.pre-commit-config.yaml
+
+# Nix machine config summary
+system-diffs/
+
+# Nix Test
+.nixos-test-history

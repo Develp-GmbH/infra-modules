@@ -1,0 +1,18 @@
+# shellcheck shell=bash
+# vim: ft=bash
+
+# to fix : error: [json.exception.type_error.302] type must be object, but is string
+# on Sids MacOS this is required for some dumb reason
+NIX_CONFIG="${NIX_CONFIG:-}
+extra-substituters = https://infra-lido.cachix.org
+extra-trusted-public-keys = infra-lido.cachix.org-1:NX5g5Ybi4ZwdZJWPmh7JAHntqvtWesyPfAJwcRvyJGw="
+
+# This only works if user in trusted-users,
+# set system-wide remote builder otherwise
+if [[ "$(uname)" == "Darwin" ]]; then
+  NIX_CONFIG="${NIX_CONFIG}
+builders = ssh-ng://${LIDO_REMOTE_USER:-$USER}@${LIDO_REMOTE_ADDR:-spare-01.tsw-tyo1.lido.mainnet.vpn.develp.co} x86_64-linux - ${LIDO_REMOTE_CORES:-16} 1 - - -
+builders-use-substitutes = true"
+fi
+
+export NIX_CONFIG

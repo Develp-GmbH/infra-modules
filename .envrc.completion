@@ -1,0 +1,9 @@
+# shellcheck shell=bash
+# vim: ft=bash
+
+# Load completion
+if [[ "${SHELL}" =~ .*/zsh$ ]]; then
+  source "$(dirname $(which just))/../share/zsh/site-functions/_just"
+elif [[ "${SHELL}" =~ .*/bash$ ]]; then
+  source "$(dirname $(which just))/../share/bash-completion/completions/just.bash"
+fi
