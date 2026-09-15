@@ -35,6 +35,8 @@
         })
       );
     in {
+      lib = import ./lib { lib = nixpkgs.lib; };
+
       overlays.default = final: prev: let
         inherit (prev) callPackage;
         inherit (prev.stdenv.hostPlatform) system;
@@ -48,6 +50,8 @@
         nethermind   = callPackage ./pkgs/nethermind {};
         secrets      = callPackage ./pkgs/secrets {};
         web3signer   = callPackage ./pkgs/web3signer {};
+
+        lib = prev.lib.extend (libFinal: libPrev: import ./lib { lib = libFinal; });
       };
 
       packages = forAllSystems (pkgs: {
