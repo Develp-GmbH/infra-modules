@@ -59,6 +59,17 @@
           go-ethereum commit-boost nethermind web3signer;
       });
 
+      nixosModules = {
+        default = ./modules/services;
+
+        commit-boost            = ./modules/services/commit-boost;
+        go-ethereum             = ./modules/services/go-ethereum;
+        nethermind              = ./modules/services/nethermind;
+        nimbus-beacon-node      = ./modules/services/nimbus-beacon-node;
+        nimbus-validator-client = ./modules/services/nimbus-validator-client;
+        web3signer              = ./modules/services/web3signer;
+      };
+
       devShells = forAllSystems (pkgs: let
         inherit (pkgs.stdenv.hostPlatform) system;
       in {
