@@ -1,7 +1,7 @@
 {
   imports = [
     ./commit-boost
-    ./geth
+    ./go-ethereum
     ./nethermind
     ./nimbus-beacon-node
     ./nimbus-validator-client
