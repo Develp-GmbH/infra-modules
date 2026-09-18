@@ -50,12 +50,13 @@
         nethermind   = callPackage ./pkgs/nethermind {};
         secrets      = callPackage ./pkgs/secrets {};
         web3signer   = callPackage ./pkgs/web3signer {};
+        systems-diff = callPackage ./pkgs/systems-diff {};
 
         lib = prev.lib.extend (libFinal: libPrev: import ./lib { lib = libFinal; });
       };
 
       packages = forAllSystems (pkgs: {
-        inherit (pkgs) secrets ragenix cachix nixos-anywhere
+        inherit (pkgs) secrets systems-diff ragenix cachix nixos-anywhere
           go-ethereum commit-boost nethermind web3signer;
       });
 

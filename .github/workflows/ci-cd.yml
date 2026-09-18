@@ -15,7 +15,6 @@ permissions:
 
 env:
   CACHIX_CACHE: ${{ vars.CACHIX_CACHE }}
-  SYSTEM_DIFFS_DIR: './system-diffs'
 
 jobs:
   builds:
@@ -29,6 +28,7 @@ jobs:
           - go-ethereum
           - nethermind
           - secrets
+          - systems-diff
           - web3signer
 
     steps:
