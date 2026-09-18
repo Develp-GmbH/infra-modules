@@ -23,10 +23,8 @@ in
       nix-eval-jobs nix-output-monitor nixos-rebuild
     ] ++ extraPkgs;
 
-    # Verify Cachix configuration
     shellHook = ''
       source .envrc.completion
       source .envrc.nix-config
-      ./scripts/cachix_setup.sh
     '';
   }
