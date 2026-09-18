@@ -13,7 +13,7 @@ let
   # Extract sshKey attribute if it's available.
   getSshKey = name: config:
     if isNotVm name
-    then config.host-info.sshKey or null
+    then config.config.host-info.sshKey or null
     else null;
 in
   # Arguments:
